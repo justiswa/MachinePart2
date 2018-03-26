@@ -9,6 +9,8 @@ import pickle
 import sys
 
 def ldaLearn(X,y):
+    means = None
+    covmat = None
     # Inputs
     # X - a N x d matrix with each row corresponding to a training example
     # y - a N x 1 column vector indicating the labels for each training example
@@ -21,6 +23,8 @@ def ldaLearn(X,y):
     return means,covmat
 
 def qdaLearn(X,y):
+    means = None
+    covmats = None
     # Inputs
     # X - a N x d matrix with each row corresponding to a training example
     # y - a N x 1 column vector indicating the labels for each training example
@@ -33,6 +37,8 @@ def qdaLearn(X,y):
     return means,covmats
 
 def ldaTest(means,covmat,Xtest,ytest):
+    acc = None
+    ypred = None
     # Inputs
     # means, covmat - parameters of the LDA model
     # Xtest - a N x d matrix with each row corresponding to a test example
@@ -45,6 +51,8 @@ def ldaTest(means,covmat,Xtest,ytest):
     return acc,ypred
 
 def qdaTest(means,covmats,Xtest,ytest):
+    acc = None
+    ypred = None
     # Inputs
     # means, covmats - parameters of the QDA model
     # Xtest - a N x d matrix with each row corresponding to a test example
@@ -55,7 +63,7 @@ def qdaTest(means,covmats,Xtest,ytest):
 
     # IMPLEMENT THIS METHOD
     return acc,ypred
-
+#PART 1 ENDS HERE-------------------------------------------------------
 def learnOLERegression(X,y):
     # Inputs:                                                         
     # X = N x d 
@@ -125,6 +133,10 @@ means,covmats = qdaLearn(X,y)
 qdaacc,qdares = qdaTest(means,covmats,Xtest,ytest)
 print('QDA Accuracy = '+str(qdaacc))
 
+#Part 1 Ends Here
+"""
+
+
 # plotting boundaries
 x1 = np.linspace(-5,20,100)
 x2 = np.linspace(-5,20,100)
@@ -137,6 +149,7 @@ fig = plt.figure(figsize=[12,6])
 plt.subplot(1, 2, 1)
 
 zacc,zldares = ldaTest(means,covmat,xx,np.zeros((xx.shape[0],1)))
+
 plt.contourf(x1,x2,zldares.reshape((x1.shape[0],x2.shape[0])),alpha=0.3)
 plt.scatter(Xtest[:,0],Xtest[:,1],c=ytest)
 plt.title('LDA')
@@ -244,3 +257,4 @@ plt.plot(range(pmax),mses5)
 plt.title('MSE for Test Data')
 plt.legend(('No Regularization','Regularization'))
 plt.show()
+"""
