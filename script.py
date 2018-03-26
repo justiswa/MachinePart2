@@ -27,9 +27,12 @@ def findClasses(X,y):#splits up primary vector based on result
     #Now, get all indices of each result type
     i = 0
     resultIndices = {}
-    print(uniqueY)
+    
     for i in uniqueY:
-        resultIndices[str(i)] = []
+        temp = str(int(i))
+        
+        
+        resultIndices[temp] = []
     i = 0
     
     while(i < np.shape(y)[0]):#iterate through entire result vector
@@ -41,7 +44,7 @@ def findClasses(X,y):#splits up primary vector based on result
         #print(type(value))
         i=i+1
     for i in uniqueY:
-       resultIndices[str(i)] = np.take(X,resultIndices[str(i)],axis=0)
+       resultIndices[str(int(i))] = np.take(X,resultIndices[str(int(i))],axis=0)
           
     return resultIndices
     
