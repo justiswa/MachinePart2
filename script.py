@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import pickle
 import sys
 
-
 def  Gaussian(mean,sigma,X):
     #Inputs
     #mean is vector of column means
@@ -24,10 +23,20 @@ def findClasses(X,y):
     return
     
 
+def findMew(input):#finds the mean of each column in a matrix you pass to it
+    numCol = np.shape(X)[1] #number of colums
+    i = 0 #counter variable
+    Mew = [0,0] #initializing random Mew vector
+    while(i < numCol): #for each column
+        Mew[i] = np.mean(X[i]) #the output of Mew[i] is the mean of column i
+        i = i+1 #increment i
+    return Mew
 
 def ldaLearn(X,y):
     means = None
     covmat = None
+    findMew(X)
+    #Gaussian
     # Inputs
     # X - a N x d matrix with each row corresponding to a training example
     # y - a N x 1 column vector indicating the labels for each training example
