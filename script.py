@@ -8,6 +8,23 @@ import matplotlib.pyplot as plt
 import pickle
 import sys
 
+
+def  Gaussian(mean,sigma,X):
+    #Inputs
+    #mean is vector of column means
+    #sigma is a matrix
+    #x is data
+    D = X.shape(0)
+    first = 1/((2*pi)^(D/2)*det(sigma)^(1/2))
+    ePart = -1*(np.transpose(X-mean)*inv(sigma)*(X-mean))/2
+    return first*np.exp(ePart)
+    
+def findClasses(X,y):
+    #index of this array of matrices will corrspond to which y it is
+    return
+    
+
+
 def ldaLearn(X,y):
     means = None
     covmat = None
