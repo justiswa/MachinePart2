@@ -18,24 +18,50 @@ def  Gaussian(mean,sigma,X):
     ePart = -1*(np.transpose(X-mean)*inv(sigma)*(X-mean))/2
     return first*np.exp(ePart)
     
-def findClasses(X,y):
-    #index of this array of matrices will corrspond to which y it is
-    return
+def findClasses(X,y):#splits up primary vector based on result
+   #
+   #Returns a dirctionary of str(y) as the key value is a matrix of the correct rows from X
+    #first find number of unique result types in Y
+    uniqueY = np.unique(y) #returns vector of unique results
+    numUnique = np.shape(uniqueY)[0] #heres how many unique results there are
+    #Now, get all indices of each result type
+    i = 0
+    resultIndices = {}
+    print(uniqueY)
+    for i in uniqueY:
+        resultIndices[str(i)] = []
+    i = 0
+    
+    while(i < np.shape(y)[0]):#iterate through entire result vector
+        #store i-value in matching point in resultIndicies
+        value = int(y[i])
+        index = i
+        
+        resultIndices[str(value)]+=[index]
+        #print(type(value))
+        i=i+1
+    for i in uniqueY:
+       resultIndices[str(i)] = np.take(X,resultIndices[str(i)],axis=0)
+          
+    return resultIndices
     
 
 def findMew(input):#finds the mean of each column in a matrix you pass to it
-    numCol = np.shape(X)[1] #number of colums
+    numCol = np.shape(input)[1] #number of colums
     i = 0 #counter variable
-    Mew = [0,0] #initializing random Mew vector
+    Mew = [] #initializing random Mew vector
+    input= np.transpose(input)
     while(i < numCol): #for each column
-        Mew[i] = np.mean(X[i]) #the output of Mew[i] is the mean of column i
+        Mew = np.append(Mew,np.mean(input[i]) )#the output of Mew[i] is the mean of column i
         i = i+1 #increment i
+    print("Mew Vector = ", Mew)
     return Mew
 
 def ldaLearn(X,y):
     means = None
     covmat = None
     findMew(X)
+    findClasses(X,y)
     #Gaussian
     # Inputs
     # X - a N x d matrix with each row corresponding to a training example
