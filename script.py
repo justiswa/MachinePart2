@@ -170,7 +170,17 @@ def mapNonLinear(x,p):
 # Main script
 
 # Problem 1
-# load the sample data                                                                 
+# load the sample data             
+
+inp = open('sample.pickle', 'rb')
+str_inp = inp.read().decode()
+modified_file = str_inp.replace('\r\n', '\n')
+inp.close()
+
+out = open('sample.pickle', 'wb')
+out.write(modified_file.encode())
+out.close() 
+                                                    
 if sys.version_info.major == 2:
     X,y,Xtest,ytest = pickle.load(open('sample.pickle','rb'))
 else:
