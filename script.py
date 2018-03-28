@@ -8,22 +8,12 @@ import matplotlib.pyplot as plt
 import pickle
 import sys
 
-"""def testMew(input): brute force testing for findMew correctness
-    mewtotal=0
-    mewcount=np.shape(input)[0]
-    
-    #print(X[:,0])#the 0 column of the matrix
-    #print(np.shape(input)[0])
-    for i in range(0,np.shape(input)[0]):
-        mewtotal = mewtotal + input[i,0]
-        
-    average = mewtotal/mewcount
-    print(average)
-    return 0"""
+
 def getUniqueY(y):
     uniqueY = np.unique(y) #returns vector of unique results
     
     return uniqueY
+
 def findSigma(input, mewVector):
     numRows = input.shape[0] #read the var name its pretty self explanatory
     sigma = np.zeros((input.shape[1],input.shape[1])) #make sigma be Column number x Column number
@@ -47,8 +37,14 @@ def  Gaussian(mean,sigma,X):
     #sigma is a matrix
     #x is data
     D = X.shape[0]
+    value1 = X-mean
+    value1 = value1.reshape(value1.size,1)
+    
     first = 1/(pow((2*pi),(D/2))*pow(float(det(sigma)),(1/2)))
-    ePart = -1*(np.transpose(X-mean)*inv(sigma)*(X-mean))/2
+    ePart = -1*np.matmul(np.matmul(np.transpose(value1),inv(sigma)),value1)/2
+    
+    
+    
     return first*np.exp(ePart)
     
 def findClasses(X,y):#splits up primary vector based on result
@@ -56,7 +52,7 @@ def findClasses(X,y):#splits up primary vector based on result
    #Returns a dirctionary of str(y) as the key value is a matrix of the correct rows from X
     #first find number of unique result types in Y
     uniqueY = getUniqueY(y) #returns vector of unique results
-    numUnique = np.shape(uniqueY)[0] #heres how many unique results there are
+    
     #Now, get all indices of each result type
     i = 0
     resultIndices = {}
@@ -138,8 +134,8 @@ def qdaLearn(X,y):
     return means,covmats
 
 def ldaTest(means,covmat,Xtest,ytest):
-    acc = None
-    ypred = None
+    
+    
     uniqueY = getUniqueY(ytest) #fetch uniquey
     ypred = []
     
@@ -181,17 +177,30 @@ def ldaTest(means,covmat,Xtest,ytest):
 
 def qdaTest(means,covmats,Xtest,ytest):
     acc = None
-    ypred = None
+    ypred = []
     
-    counts = np.unique(ytest, return_counts=True) #number of times each unique item appears
-    maximum = -sys.maxsize-1
+    counts = np.unique(ytest, return_counts=True)[1] #number of times each unique item appears
+    
+    
     X,uniqueY = findClasses(Xtest,ytest)
     numY = uniqueY.shape[0]
     
     for j in range(0,Xtest.shape[0]):
+        maximum = -sys.maxsize-1
         for i in uniqueY:
-            val1 = Gaussian(means[int(i-1)],covmats[int(i-1)],X[str(int(i))][j])
-            print(val1)
+            val1 = Gaussian(means[int(i-1)],covmats[int(i-1)],Xtest[j]) * (counts[int(i)-1]/numY)
+            if(val1 > maximum):
+                maximum = val1
+                predClass = int(i)
+        ypred.append(predClass)
+    numCorrect =0   
+    ypred = np.array(ypred)
+    ypred = ypred.reshape(len(ypred),1)
+    
+    for i in range(0,len(ypred)):
+        if(ypred[i][0]==int(ytest[i][0])):
+                numCorrect+=1
+    acc = numCorrect/ytest.shape[0] *100
     # Inputs
     # means, covmats - parameters of the QDA model
     # Xtest - a N x d matrix with each row corresponding to a test example
