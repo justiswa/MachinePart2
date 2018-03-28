@@ -8,13 +8,46 @@ import matplotlib.pyplot as plt
 import pickle
 import sys
 
+"""def testMew(input): brute force testing for findMew correctness
+    mewtotal=0
+    mewcount=np.shape(input)[0]
+    
+    #print(X[:,0])#the 0 column of the matrix
+    #print(np.shape(input)[0])
+    for i in range(0,np.shape(input)[0]):
+        mewtotal = mewtotal + input[i,0]
+        
+    average = mewtotal/mewcount
+    print(average)
+    return 0"""
+def getUniqueY(y):
+    uniqueY = np.unique(y) #returns vector of unique results
+    
+    return uniqueY
+def findSigma(input, mewVector):
+    numRows = input.shape[0] #read the var name its pretty self explanatory
+    sigma = np.zeros((input.shape[1],input.shape[1])) #make sigma be Column number x Column number
+    
+    for i in range(0,numRows): # for every row in the input
+       value1 = input[i] - mewVector
+       value1 = value1.reshape(value1.size,1) #getting first value and reshapeing to (2,1)
+       
+       value2 = input[i] - mewVector
+       value2 = value2.reshape(value2.size,1)#getting second value and reshaping to (2,1)
+       
+       sigma += np.matmul(value1, np.transpose(value2))#matmulling the values
+       
+    sigma = np.divide(sigma,numRows)  #some good ol' fashioned matrix divison?
+    return sigma
+
+
 def  Gaussian(mean,sigma,X):
     #Inputs
     #mean is vector of column means
     #sigma is a matrix
     #x is data
-    D = X.shape(0)
-    first = 1/((2*pi)^(D/2)*det(sigma)^(1/2))
+    D = X.shape[0]
+    first = 1/(pow((2*pi),(D/2))*pow(float(det(sigma)),(1/2)))
     ePart = -1*(np.transpose(X-mean)*inv(sigma)*(X-mean))/2
     return first*np.exp(ePart)
     
@@ -22,17 +55,14 @@ def findClasses(X,y):#splits up primary vector based on result
    #
    #Returns a dirctionary of str(y) as the key value is a matrix of the correct rows from X
     #first find number of unique result types in Y
-    uniqueY = np.unique(y) #returns vector of unique results
+    uniqueY = getUniqueY(y) #returns vector of unique results
     numUnique = np.shape(uniqueY)[0] #heres how many unique results there are
     #Now, get all indices of each result type
     i = 0
     resultIndices = {}
-    
+    #print(uniqueY)
     for i in uniqueY:
-        temp = str(int(i))
-        
-        
-        resultIndices[temp] = []
+        resultIndices[str(int(i))] = []
     i = 0
     
     while(i < np.shape(y)[0]):#iterate through entire result vector
@@ -45,8 +75,8 @@ def findClasses(X,y):#splits up primary vector based on result
         i=i+1
     for i in uniqueY:
        resultIndices[str(int(i))] = np.take(X,resultIndices[str(int(i))],axis=0)
-          
-    return resultIndices
+         
+    return resultIndices,uniqueY#returning the split X values, and unique Y values
     
 
 def findMew(input):#finds the mean of each column in a matrix you pass to it
@@ -57,15 +87,22 @@ def findMew(input):#finds the mean of each column in a matrix you pass to it
     while(i < numCol): #for each column
         Mew = np.append(Mew,np.mean(input[i]) )#the output of Mew[i] is the mean of column i
         i = i+1 #increment i
-    print("Mew Vector = ", Mew)
+    #print("Mew Vector = ", Mew)
     return Mew
 
 def ldaLearn(X,y):
-    means = None
-    covmat = None
-    findMew(X)
-    findClasses(X,y)
-    #Gaussian
+    mewVector = findMew(X) #get the mew vector for X
+    sigma = findSigma(X, mewVector) #find the sigma matrix for X
+    splitClasses,uniqueY = findClasses(X, y) #use findClasses to split up matrix
+    numColumns = X.shape[1]
+    
+    means = np.ones((uniqueY.shape[0],numColumns))
+    covmat = sigma
+    
+    for i in uniqueY:
+       means[int(i-1)] = findMew(splitClasses[str(int(i))])
+        
+    
     # Inputs
     # X - a N x d matrix with each row corresponding to a training example
     # y - a N x 1 column vector indicating the labels for each training example
@@ -74,12 +111,21 @@ def ldaLearn(X,y):
     # means - A k x d matrix containing learnt means for each of the k classes
     # covmat - A single d x d learnt covariance matrix 
     
-    # IMPLEMENT THIS METHOD 
+   
     return means,covmat
 
 def qdaLearn(X,y):
-    means = None
-    covmats = None
+    numColumns = X.shape[1]
+    splitClasses,uniqueY = findClasses(X, y) #use findClasses to split up matrix
+    means = np.ones((uniqueY.shape[0],numColumns))
+   
+    for i in uniqueY:
+       means[int(i-1)] = findMew(splitClasses[str(int(i))])
+    
+    covmats =[]
+    for i in uniqueY:
+        covmats.append(findSigma(splitClasses[str(int(i))],means[int(i-1)]))
+    
     # Inputs
     # X - a N x d matrix with each row corresponding to a training example
     # y - a N x 1 column vector indicating the labels for each training example
@@ -94,6 +140,34 @@ def qdaLearn(X,y):
 def ldaTest(means,covmat,Xtest,ytest):
     acc = None
     ypred = None
+    uniqueY = getUniqueY(ytest) #fetch uniquey
+    ypred = []
+    
+    for j in range(0,Xtest.shape[0]):
+        minimum = sys.maxsize#minimum value
+        
+        for i in uniqueY:
+            val2 = (Xtest[j] - means[int(i-1)])
+            val1 = np.transpose(val2)
+            val3 = np.matmul(val1,inv(covmat))
+            val4 = np.matmul(val3,val2)
+            
+            
+            if(val4 < minimum):
+                minimum = val4
+                predClass = int(i)
+        
+        ypred.append(predClass)
+    numCorrect =0
+    #print(ypred)
+    ypred = np.array(ypred)
+    ypred = ypred.reshape(len(ypred),1)
+    
+    
+    for i in range(0,len(ypred)):
+        if(ypred[i][0]==int(ytest[i][0])):
+                numCorrect+=1
+    acc = numCorrect/ytest.shape[0] *100
     # Inputs
     # means, covmat - parameters of the LDA model
     # Xtest - a N x d matrix with each row corresponding to a test example
@@ -108,6 +182,16 @@ def ldaTest(means,covmat,Xtest,ytest):
 def qdaTest(means,covmats,Xtest,ytest):
     acc = None
     ypred = None
+    
+    counts = np.unique(ytest, return_counts=True) #number of times each unique item appears
+    maximum = -sys.maxsize-1
+    X,uniqueY = findClasses(Xtest,ytest)
+    numY = uniqueY.shape[0]
+    
+    for j in range(0,Xtest.shape[0]):
+        for i in uniqueY:
+            val1 = Gaussian(means[int(i-1)],covmats[int(i-1)],X[str(int(i))][j])
+            print(val1)
     # Inputs
     # means, covmats - parameters of the QDA model
     # Xtest - a N x d matrix with each row corresponding to a test example
