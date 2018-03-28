@@ -188,7 +188,7 @@ def qdaTest(means,covmats,Xtest,ytest):
     for j in range(0,Xtest.shape[0]):
         maximum = -sys.maxsize-1
         for i in uniqueY:
-            val1 = Gaussian(means[int(i-1)],covmats[int(i-1)],Xtest[j]) * (counts[int(i)-1]/numY)
+            val1 = Gaussian(means[int(i-1)],covmats[int(i-1)],Xtest[j])
             if(val1 > maximum):
                 maximum = val1
                 predClass = int(i)
