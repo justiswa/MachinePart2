@@ -219,7 +219,10 @@ def learnOLERegression(X,y):
     # Output: 
     # w = d x 1 
 	
-    # IMPLEMENT THIS METHOD                                                   
+    val1 = np.matmul(np.transpose(X),X)
+    val1 = np.matmul(inv(val1),np.transpose(X))        
+    w = np.matmul(val1,y)     
+                
     return w
 
 def learnRidgeRegression(X,y,lambd):
@@ -241,7 +244,15 @@ def testOLERegression(w,Xtest,ytest):
     # Output:
     # mse
     
-    # IMPLEMENT THIS METHOD
+    mse = 0
+    numY = ytest.shape[0]
+   
+    for i in range(0,numY):
+        wtx = np.dot(np.transpose(w),Xtest[i])
+        
+        val2 = (int)(ytest[i][0] - wtx)
+        mse+=val2^2
+    mse/=numY
     return mse
 
 def regressionObjVal(w, X, y, lambd):
@@ -264,10 +275,9 @@ def mapNonLinear(x,p):
     return Xp
 
 # Main script
-
 # Problem 1
-# load the sample data             
-
+#This was added so it would run on my computer       
+"""
 inp = open('sample.pickle', 'rb')
 str_inp = inp.read().decode()
 modified_file = str_inp.replace('\r\n', '\n')
@@ -276,7 +286,12 @@ inp.close()
 out = open('sample.pickle', 'wb')
 out.write(modified_file.encode())
 out.close() 
-                                                    
+        
+
+
+
+# load the sample data 
+                                
 if sys.version_info.major == 2:
     X,y,Xtest,ytest = pickle.load(open('sample.pickle','rb'))
 else:
@@ -291,7 +306,6 @@ means,covmats = qdaLearn(X,y)
 qdaacc,qdares = qdaTest(means,covmats,Xtest,ytest)
 print('QDA Accuracy = '+str(qdaacc))
 
-#Part 1 Ends Here
 
 
 
@@ -322,7 +336,19 @@ plt.scatter(Xtest[:,0],Xtest[:,1],c=ytest.flatten())
 plt.title('QDA')
 
 plt.show()
+
+#Part 1 Ends Here
 """
+#This part was added so it would run on my computer
+inp = open('diabetes.pickle', 'rb')
+str_inp = inp.read().decode()
+modified_file = str_inp.replace('\r\n', '\n')
+inp.close()
+
+out = open('diabetes.pickle', 'wb')
+out.write(modified_file.encode())
+out.close() 
+
 # Problem 2
 if sys.version_info.major == 2:
     X,y,Xtest,ytest = pickle.load(open('diabetes.pickle','rb'))
@@ -341,7 +367,7 @@ mle_i = testOLERegression(w_i,Xtest_i,ytest)
 
 print('MSE without intercept '+str(mle))
 print('MSE with intercept '+str(mle_i))
-
+"""
 # Problem 3
 k = 101
 lambdas = np.linspace(0, 1, num=k)
