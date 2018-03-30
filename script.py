@@ -355,16 +355,27 @@ if sys.version_info.major == 2:
 else:
     X,y,Xtest,ytest = pickle.load(open('diabetes.pickle','rb'),encoding = 'latin1')
 
+
+
+
+
+
 # add intercept
+
 X_i = np.concatenate((np.ones((X.shape[0],1)), X), axis=1)
 Xtest_i = np.concatenate((np.ones((Xtest.shape[0],1)), Xtest), axis=1)
 
 w = learnOLERegression(X,y)
 mle = testOLERegression(w,Xtest,ytest)
-
+mle_TD = testOLERegression(w,X,y)
 w_i = learnOLERegression(X_i,y)
 mle_i = testOLERegression(w_i,Xtest_i,ytest)
+mle_i_TD = testOLERegression(w_i,X_i,y)
+print("TRAIN DATA")
 
+print('MSE without intercept '+str(mle_TD))
+print('MSE with intercept '+str(mle_i_TD))
+print("TEST DATA")
 print('MSE without intercept '+str(mle))
 print('MSE with intercept '+str(mle_i))
 """
