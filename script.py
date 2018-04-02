@@ -233,7 +233,10 @@ def learnRidgeRegression(X,y,lambd):
     # Output:                                                                  
     # w = d x 1                                                                
 
-    # IMPLEMENT THIS METHOD                                                   
+    # IMPLEMENT THIS METHOD   
+
+
+	# slides partc1, #20
     return w
 
 def testOLERegression(w,Xtest,ytest):
