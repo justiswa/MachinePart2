@@ -217,12 +217,12 @@ def learnOLERegression(X,y):
     # X = N x d 
     # y = N x 1                                                               
     # Output: 
-    # w = d x 1 
-	
+    # w = d x 1
+    
     val1 = np.matmul(np.transpose(X),X)
     val1 = np.matmul(inv(val1),np.transpose(X))        
     w = np.matmul(val1,y)     
-                
+            
     return w
 
 def learnRidgeRegression(X,y,lambd):
@@ -252,13 +252,14 @@ def testOLERegression(w,Xtest,ytest):
     
     mse = 0
     numY = ytest.shape[0]
-   
+    
     for i in range(0,numY):
         wtx = np.dot(np.transpose(w),Xtest[i])
         
-        val2 = (int)(ytest[i][0] - wtx)
-        mse+=val2^2
-    mse/=numY
+        val2 = (ytest[i][0] - wtx)[0]
+        
+        mse+=pow(val2,2)
+    mse= mse/numY
     return mse
 
 def regressionObjVal(w, X, y, lambd):
@@ -458,8 +459,8 @@ plt.plot(lambdas,mses3)
 plt.title('MSE for Test Data')
 plt.legend(['Using scipy.minimize','Direct minimization'])
 plt.show()
-
 """
+
 # Problem 5
 pmax = 7
 lambda_opt = opLamTest # REPLACE THIS WITH lambda_opt estimated from Problem 3
