@@ -326,7 +326,7 @@ out.write(modified_file.encode())
 out.close() 
         
 
-
+"""
 
 # load the sample data 
                                 
@@ -377,6 +377,7 @@ plt.show()
 
 #Part 1 Ends Here
 """
+
 #This part was added so it would run on my computer
 inp = open('diabetes.pickle', 'rb')
 str_inp = inp.read().decode()
@@ -386,7 +387,7 @@ inp.close()
 out = open('diabetes.pickle', 'wb')
 out.write(modified_file.encode())
 out.close() 
-
+"""
 # Problem 2
 if sys.version_info.major == 2:
     X,y,Xtest,ytest = pickle.load(open('diabetes.pickle','rb'))
@@ -467,7 +468,7 @@ for lambd in lambdas:
     mses4_train[i] = testOLERegression(w_l,X_i,y)
     mses4[i] = testOLERegression(w_l,Xtest_i,ytest)
     i = i + 1
-    print(lambd)
+
 fig = plt.figure(figsize=[12,6])
 plt.subplot(1, 2, 1)
 plt.plot(lambdas,mses4_train)
