@@ -267,8 +267,29 @@ def regressionObjVal(w, X, y, lambd):
     # compute squared error (scalar) and gradient of squared error with respect
     # to w (vector) for the given data X and y and the regularization parameter
     # lambda                                                                  
+    
+    # IMPLEMENT THIS METHOD   
+    
+    squarer = lambda wj: wj ** 2
+    square_func = np.vectorize(squarer)
+    L2 = lambd * sqrt(np.sum(square_func(w))) / 2
+    error = 0
+    for i in range(0,X.shape[0]):
+        error += np.square((y[i] - np.matmul(np.transpose(w), X[i]))) + L2
+        
+    error /= 2
+    
+    error_grad = np.zeros(w.shape)
+   
+    for j in range(0,len(w)):
+        run_sum = 0
+        for i in range(0,X.shape[0]):
+            val = np.matmul(np.transpose(w),X[i])
+            val = val - y[i]
+            val = val *X[i,j]
+            run_sum+= (lambd*w[j])
+        error_grad[j]+=run_sum
 
-    # IMPLEMENT THIS METHOD                                             
     return error, error_grad
 
 def mapNonLinear(x,p):
@@ -429,7 +450,7 @@ plt.title('MSE for Test Data')
 plt.show()
 print("OpTrain = " , opLamTrain)
 print("OpTest = " , opLamTest)
-"""
+
 # Problem 4
 k = 101
 lambdas = np.linspace(0, 1, num=k)
@@ -446,6 +467,7 @@ for lambd in lambdas:
     mses4_train[i] = testOLERegression(w_l,X_i,y)
     mses4[i] = testOLERegression(w_l,Xtest_i,ytest)
     i = i + 1
+    print(lambd)
 fig = plt.figure(figsize=[12,6])
 plt.subplot(1, 2, 1)
 plt.plot(lambdas,mses4_train)
@@ -459,7 +481,7 @@ plt.plot(lambdas,mses3)
 plt.title('MSE for Test Data')
 plt.legend(['Using scipy.minimize','Direct minimization'])
 plt.show()
-"""
+
 
 # Problem 5
 pmax = 7
