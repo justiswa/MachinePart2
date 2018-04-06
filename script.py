@@ -272,7 +272,7 @@ def regressionObjVal(w, X, y, lambd):
     
     squarer = lambda wj: wj ** 2
     square_func = np.vectorize(squarer)
-    L2 = lambd * sqrt(np.sum(square_func(w))) / 2
+    L2 = lambd * (np.sum(square_func(w))) / 2
     error = 0
     for i in range(0,X.shape[0]):
         error += np.square((y[i] - np.matmul(np.transpose(w), X[i]))) + L2
